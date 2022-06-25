@@ -1,10 +1,15 @@
 import WalletButton from '../components/wallet/WalletButton'
 import { WalletModal } from '../components/wallet/WalletModal'
 import { useAccount } from '../hooks/useAccount'
+import { useInvestment } from '../hooks/useInvestiment'
 import { investmentService } from '../services/InvestmentService'
 
 export default function Home() {
   const { account } = useAccount()
+
+  const investment = useInvestment('0x46bEF163D6C470a4774f9585F3500Ae3b642e751', 4)
+
+  console.log('investment', investment)
 
   return (
     <div>

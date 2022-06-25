@@ -22,15 +22,25 @@ if (!process.env.NEXT_PUBLIC_CLOSE_INVESTMENT_CONTRACT) {
   throw new Error('Missing NEXT_PUBLIC_CLOSE_INVESTMENT_CONTRACT environment variable')
 }
 
+if (!process.env.NEXT_PUBLIC_BACKEND_API) {
+  throw new Error('Missing NEXT_PUBLIC_BACKEND_API environment variable')
+}
+
 export interface GlobalConfig {
   infura: {
     key: string
+  }
+  backend: {
+    api: string
   }
 }
 
 export const globalConfig: GlobalConfig = {
   infura: {
     key: process.env.NEXT_PUBLIC_INFURA_KEY
+  },
+  backend: {
+    api: process.env.NEXT_PUBLIC_BACKEND_API
   }
 }
 
