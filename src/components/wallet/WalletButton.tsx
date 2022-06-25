@@ -4,8 +4,8 @@ import Web3 from 'web3'
 import Web3Modal from 'web3modal'
 import { globalConfig } from '../../config'
 import { useAccount } from '../../hooks/useAccount'
-import { Account } from '../../services/AccountVariable'
 import { chainToName } from '../../utils'
+import { Account } from '../../variables/AccountVariable'
 
 export default function WalletButton() {
   const { setAccount } = useAccount()

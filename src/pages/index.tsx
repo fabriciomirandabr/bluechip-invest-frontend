@@ -5,8 +5,6 @@ import { useAccount } from '../hooks/useAccount'
 export default function Home() {
   const { account } = useAccount()
 
-  console.log('account', account)
-
   return (
     <div>
       <WalletModal />
