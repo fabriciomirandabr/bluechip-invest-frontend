@@ -9,7 +9,7 @@ export interface InvestmentService {
   createInvestment(collectionAddress: string, name: string, symbol: string): Promise<void>
   addMoney(investmentId: string, amount: string, reservePrice: string): Promise<void>
   removeAllMoney(investmentId: string): Promise<void>
-  closeInvestment(investmentId: string, payload: any): Promise<void>
+  closeInvestment(investmentId: string, payload: string): Promise<void>
   claimFractions(investmentId: string): Promise<void>
 }
 
@@ -202,8 +202,7 @@ export function investmentService(chainId: number, account: Account): Investment
 
       console.log('tx', tx)
     },
-    async closeInvestment(investmentId: string, payload: any) {
-      // ! Check the payload problem
+    async closeInvestment(investmentId: string, payload: string) {
       // Tatum - Prepare Transaction
       const prepareTx = await axios.post<{ signatureId: string }>(
         `${configByChain(chainId).tatum.api}/ethereum/smartcontract`,
@@ -212,21 +211,9 @@ export function investmentService(chainId: number, account: Account): Investment
           methodName: 'acquire',
           methodABI: {
             inputs: [
-              {
-                internalType: 'uint256',
-                name: '_listingId',
-                type: 'uint256'
-              },
-              {
-                internalType: 'bool',
-                name: '_relist',
-                type: 'bool'
-              },
-              {
-                internalType: 'bytes',
-                name: '_data',
-                type: 'bytes'
-              }
+              { internalType: 'uint256', name: '_listingId', type: 'uint256' },
+              { internalType: 'bool', name: '_relist', type: 'bool' },
+              { internalType: 'bytes', name: '_data', type: 'bytes' }
             ],
             name: 'acquire',
             outputs: [],
@@ -236,7 +223,7 @@ export function investmentService(chainId: number, account: Account): Investment
           params: [investmentId, true, payload],
           signatureId: uuid(),
           fee: {
-            gasLimit: '300000',
+            gasLimit: '2000000',
             gasPrice: '50'
           }
         },
