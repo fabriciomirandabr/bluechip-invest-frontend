@@ -14,6 +14,10 @@ if (!process.env.NEXT_PUBLIC_TATUM_TESTNET_KEY) {
   throw new Error('Missing NEXT_PUBLIC_TATUM_KEY environment variable')
 }
 
+if (!process.env.NEXT_PUBLIC_INVESTMENT_CONTRACT) {
+  throw new Error('Missing NEXT_PUBLIC_INVESTMENT_CONTRACT environment variable')
+}
+
 export interface GlobalConfig {
   infura: {
     key: string
@@ -44,6 +48,9 @@ export interface ChainConfig {
     api: string
     key: string
   }
+  contracts: {
+    investment: string
+  }
 }
 
 export const chainConfig: ChainConfig[] = [
@@ -64,6 +71,9 @@ export const chainConfig: ChainConfig[] = [
     tatum: {
       api: 'https://api-eu1.tatum.io/v3',
       key: process.env.NEXT_PUBLIC_TATUM_KEY
+    },
+    contracts: {
+      investment: process.env.NEXT_PUBLIC_INVESTMENT_CONTRACT
     }
   },
   {
@@ -83,6 +93,9 @@ export const chainConfig: ChainConfig[] = [
     tatum: {
       api: 'https://api-eu1.tatum.io/v3',
       key: process.env.NEXT_PUBLIC_TATUM_TESTNET_KEY
+    },
+    contracts: {
+      investment: process.env.NEXT_PUBLIC_INVESTMENT_CONTRACT
     }
   }
 ]
