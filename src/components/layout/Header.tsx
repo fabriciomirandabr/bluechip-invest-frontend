@@ -28,5 +28,10 @@ const { Container } = {
       justify-content: flex-end;
       align-items: center;
     }
+
+    @media (max-width: 768px) {
+      gap: 8px;
+      padding: 16px 8px;
+    }
   `
 }

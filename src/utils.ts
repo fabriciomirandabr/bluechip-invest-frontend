@@ -10,6 +10,10 @@ export const chainToName = (chainId: number) => {
 }
 
 export function shortAddress(addressFormat: string, firstPart = 5, lastPart?: number): string {
+  if (!addressFormat) {
+    return ''
+  }
+
   if (!lastPart) {
     return `${addressFormat.slice(0, firstPart)}`
   }

@@ -6,15 +6,16 @@ import Web3Modal from 'web3modal'
 import { globalConfig } from '../../config'
 import { useAccount } from '../../hooks/useAccount'
 import { colors } from '../../styles/theme'
-import { chainToName } from '../../utils'
-import { Account } from '../../variables/AccountVariable'
+import { chainToName, shortAddress } from '../../utils'
+import { Account, accountVar } from '../../variables/AccountVariable'
 
 import Image from 'next/image'
 
+import Jazzicon, { jsNumberForAddress } from 'react-jazzicon'
 import icon from '../../../public/assets/wallet_connect_icon.png'
 
 export default function WalletButton() {
-  const { setAccount } = useAccount()
+  const { account, setAccount } = useAccount()
   const [openModal, setOpenModal] = useState<boolean>(false)
   const onClick = () => setOpenModal(true)
 
@@ -59,6 +60,7 @@ export default function WalletButton() {
           console.log('connected', provider)
         })
         web3Modal.on('disconnect', provider => {
+          accountVar(undefined)
           console.log('disconnected', provider)
         })
         web3Modal.on('close', provider => {
@@ -113,10 +115,20 @@ export default function WalletButton() {
   }, [openModal, setAccount])
 
   return (
-    <Button onClick={onClick}>
-      <Image src={icon} width={24} height={16} />
-      <span>Connect Wallet</span>
-    </Button>
+    <>
+      {!account?.address && (
+        <Button onClick={onClick}>
+          <Image src={icon} width={24} height={16} />
+          <span>Connect Wallet</span>
+        </Button>
+      )}
+      {account?.address && (
+        <Button onClick={onClick}>
+          <Jazzicon diameter={24} seed={jsNumberForAddress(account.address || '0')} />
+          <span>{shortAddress(account.address, 6, -6)}</span>
+        </Button>
+      )}
+    </>
   )
 }
 
