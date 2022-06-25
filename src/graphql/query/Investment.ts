@@ -16,6 +16,8 @@ export interface InvestmentData {
         tokenId: string
         tokenURI: string
       }
+      acquiringData: string
+      reservePrice: string
     }
     contractAddress: string
     description: string
@@ -51,13 +53,15 @@ export const INVESTMENT_QUERY = gql`
           tokenId
           tokenURI
         }
+        acquiringData
+        reservePrice
       }
       contractAddress
       description
       floorPrice
       floorSaleChangeToday
       image
-      lastRound {
+      lastRounds {
         id
         target {
           collection {
