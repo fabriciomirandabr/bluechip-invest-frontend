@@ -6,12 +6,14 @@ import { units } from '../utils'
 import { Account } from '../variables/AccountVariable'
 
 export interface InvestmentService {
-  create(collectionAddress: string, name: string, symbol: string, chainId: number, account: Account): Promise<void>
+  create(collectionAddress: string, name: string, symbol: string): Promise<void>
+  addMoney(investmentId: string, amount: string, reservePrice: string): Promise<void>
+  removeAllMoney(investmentId: string): Promise<void>
 }
 
-export function investmentService(): InvestmentService {
+export function investmentService(chainId: number, account: Account): InvestmentService {
   return {
-    async create(collectionAddress: string, name: string, symbol: string, chainId: number, account: Account) {
+    async create(collectionAddress: string, name: string, symbol: string) {
       // Reservoir Oracle API - Get Floor Price
       const oracle = await axios.get<{ tokens: { tokenId: string }[] }>(
         `${configByChain(chainId).reservoir.api}/tokens/bootstrap/v1?collection=${collectionAddress}&limit=50`
@@ -102,6 +104,101 @@ export function investmentService(): InvestmentService {
       }
 
       // IPFS - Save Investment
+    },
+    async addMoney(investmentId: string, amount: string, reservePrice: string) {
+      // Tatum - Prepare Transaction
+      const prepareTx = await axios.post<{ signatureId: string }>(
+        `${configByChain(chainId).tatum.api}/ethereum/smartcontract`,
+        {
+          contractAddress: configByChain(chainId).contracts.investment,
+          methodName: 'join',
+          methodABI: {
+            inputs: [
+              { internalType: 'uint256', name: '_listingId', type: 'uint256' },
+              { internalType: 'uint256', name: '_amount', type: 'uint256' },
+              { internalType: 'uint256', name: '_maxReservePrice', type: 'uint256' }
+            ],
+            name: 'join',
+            outputs: [],
+            stateMutability: 'payable',
+            type: 'function'
+          },
+          params: [investmentId, amount, reservePrice],
+          signatureId: uuid(),
+          fee: {
+            gasLimit: '300000',
+            gasPrice: '50'
+          }
+        },
+        {
+          headers: {
+            'x-api-key': configByChain(chainId).tatum.key,
+            'x-testnet-type': 'ethereum-rinkeby'
+          }
+        }
+      )
+
+      const { signatureId } = prepareTx.data
+
+      // Tatum - Prepare Signature
+      const { data } = await axios.get(`${configByChain(chainId).tatum.api}/kms/${signatureId}`, {
+        headers: {
+          'x-api-key': configByChain(chainId).tatum.key,
+          'x-testnet-type': 'ethereum-rinkeby'
+        }
+      })
+
+      const txConfig = JSON.parse(data.serializedTransaction)
+      txConfig.from = account.address
+      txConfig.value = amount
+      const tx = await account.web3.eth.sendTransaction(txConfig)
+
+      console.log('tx', tx)
+    },
+    async removeAllMoney(investmentId: string) {
+      // Tatum - Prepare Transaction
+      const prepareTx = await axios.post<{ signatureId: string }>(
+        `${configByChain(chainId).tatum.api}/ethereum/smartcontract`,
+        {
+          contractAddress: configByChain(chainId).contracts.investment,
+          methodName: 'leave',
+          methodABI: {
+            inputs: [{ internalType: 'uint256', name: '_listingId', type: 'uint256' }],
+            name: 'leave',
+            outputs: [],
+            stateMutability: 'nonpayable',
+            type: 'function'
+          },
+          params: [investmentId],
+          signatureId: uuid(),
+          fee: {
+            gasLimit: '300000',
+            gasPrice: '50'
+          }
+        },
+        {
+          headers: {
+            'x-api-key': configByChain(chainId).tatum.key,
+            'x-testnet-type': 'ethereum-rinkeby'
+          }
+        }
+      )
+
+      const { signatureId } = prepareTx.data
+
+      // Tatum - Prepare Signature
+      const { data } = await axios.get(`${configByChain(chainId).tatum.api}/kms/${signatureId}`, {
+        headers: {
+          'x-api-key': configByChain(chainId).tatum.key,
+          'x-testnet-type': 'ethereum-rinkeby'
+        }
+      })
+
+      const txConfig = JSON.parse(data.serializedTransaction)
+      txConfig.from = account.address
+      const tx = await account.web3.eth.sendTransaction(txConfig)
+
+      console.log('tx', tx)
     }
   }
 }
