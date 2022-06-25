@@ -1,11 +1,17 @@
 import WalletConnectProvider from '@walletconnect/web3-provider'
 import { useEffect, useState } from 'react'
+import styled from 'styled-components'
 import Web3 from 'web3'
 import Web3Modal from 'web3modal'
 import { globalConfig } from '../../config'
 import { useAccount } from '../../hooks/useAccount'
+import { colors } from '../../styles/theme'
 import { chainToName } from '../../utils'
 import { Account } from '../../variables/AccountVariable'
+
+import Image from 'next/image'
+
+import icon from '../../../public/assets/wallet_connect_icon.png'
 
 export default function WalletButton() {
   const { setAccount } = useAccount()
@@ -106,5 +112,35 @@ export default function WalletButton() {
     onConnect()
   }, [openModal, setAccount])
 
-  return <button onClick={onClick}>Connect Wallet</button>
+  return (
+    <Button onClick={onClick}>
+      <Image src={icon} width={24} height={16} />
+      <span>Connect Wallet</span>
+    </Button>
+  )
+}
+
+export const { Button } = {
+  Button: styled.button`
+    width: 100%;
+    max-width: 200px;
+    background-color: ${colors.blue[500]};
+    color: ${colors.white};
+    border-radius: 24px;
+    padding: 10px 18px;
+    border: none;
+    font-weight: 500;
+    font-size: 15px;
+    transition: all 0.1s ease-out;
+    display: flex;
+    align-items: center;
+    display: grid;
+    grid-template-columns: 24px auto;
+    gap: 8px;
+
+    &:hover {
+      background-color: ${colors.blue[600]};
+      transition: all 0.1s ease-in;
+    }
+  `
 }

@@ -1,7 +1,4 @@
-/* http://meyerweb.com/eric/tools/css/reset/ 
-   v2.0 | 20110126
-   License: none (public domain)
-*/
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500&display=swap');
 
 html,
 body,
@@ -126,4 +123,38 @@ q:after {
 table {
   border-collapse: collapse;
   border-spacing: 0;
+}
+
+* {
+  font-family: 'Quicksand', sans-serif;
+}
+
+.web3modal-modal-card {
+  width: 360px !important;
+  min-width: unset !important;
+  max-width: unset !important;
+  border-radius: 40px !important;
+  padding: 12px !important;
+}
+
+.web3modal-provider-container {
+  flex-direction: row !important;
+  padding: 4px 16px !important;
+}
+
+.web3modal-provider-name {
+  font-family: 'Quicksand', sans-serif;
+  font-size: 20px !important;
+}
+
+.web3modal-provider-name {
+  margin-top: -2px !important;
+}
+
+.web3modal-provider-description {
+  display: none;
+}
+
+.web3modal-provider-wrapper {
+  border: none !important;
 }

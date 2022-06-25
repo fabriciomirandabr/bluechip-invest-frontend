@@ -1,6 +1,7 @@
 import { useReactiveVar } from '@apollo/client'
 
 import { useEffect } from 'react'
+import styled from 'styled-components'
 import { useAccount } from '../../hooks/useAccount'
 
 import { transactionService } from '../../services/TransactionService'
@@ -27,4 +28,10 @@ export function WalletModal() {
   }, [account, transaction])
 
   return <>{transaction && !transaction.confirmed && <p>Processing Transaction</p>}</>
+}
+
+export const { Container } = {
+  Container: styled.div`
+    background: red;
+  `
 }
