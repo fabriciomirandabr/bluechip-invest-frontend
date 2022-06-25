@@ -2,12 +2,33 @@ if (!process.env.NEXT_PUBLIC_INFURA_KEY) {
   throw new Error('Missing NEXT_PUBLIC_INFURA_KEY environment variable')
 }
 
-console.log('NEXT_PUBLIC_INFURA_KEY', process.env.NEXT_PUBLIC_INFURA_KEY)
+if (!process.env.NEXT_PUBLIC_OPENSEA_KEY) {
+  throw new Error('Missing NEXT_PUBLIC_OPENSEA_KEY environment variable')
+}
+
+if (!process.env.NEXT_PUBLIC_TATUM_KEY) {
+  throw new Error('Missing NEXT_PUBLIC_TATUM_KEY environment variable')
+}
+
+if (!process.env.NEXT_PUBLIC_TATUM_TESTNET_KEY) {
+  throw new Error('Missing NEXT_PUBLIC_TATUM_KEY environment variable')
+}
 
 export interface ChainConfig {
   id: number
   name: string
   infura: {
+    api: string
+    key: string
+  }
+  reservoir: {
+    api: string
+  }
+  openSea: {
+    api: string
+    key: string
+  }
+  tatum: {
     api: string
     key: string
   }
@@ -20,14 +41,36 @@ export const chainConfig: ChainConfig[] = [
     infura: {
       api: 'https://mainnet.infura.io/v3',
       key: process.env.NEXT_PUBLIC_INFURA_KEY
+    },
+    reservoir: {
+      api: 'https://api.reservoir.tools'
+    },
+    openSea: {
+      api: 'https://api.opensea.io/v2',
+      key: process.env.NEXT_PUBLIC_OPENSEA_KEY
+    },
+    tatum: {
+      api: 'https://api-eu1.tatum.io/v3',
+      key: process.env.NEXT_PUBLIC_TATUM_KEY
     }
   },
   {
     id: 4,
     name: 'rinkeby',
+    reservoir: {
+      api: 'https://api-rinkeby.reservoir.tools'
+    },
     infura: {
       api: 'https://rinkeby.infura.io/v3',
       key: process.env.NEXT_PUBLIC_INFURA_KEY
+    },
+    openSea: {
+      api: 'https://testnets-api.opensea.io/v2',
+      key: process.env.NEXT_PUBLIC_OPENSEA_KEY
+    },
+    tatum: {
+      api: 'https://api-eu1.tatum.io/v3',
+      key: process.env.NEXT_PUBLIC_TATUM_TESTNET_KEY
     }
   }
 ]
