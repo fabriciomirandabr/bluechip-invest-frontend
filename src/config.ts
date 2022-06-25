@@ -14,6 +14,18 @@ if (!process.env.NEXT_PUBLIC_TATUM_TESTNET_KEY) {
   throw new Error('Missing NEXT_PUBLIC_TATUM_KEY environment variable')
 }
 
+export interface GlobalConfig {
+  infura: {
+    key: string
+  }
+}
+
+export const globalConfig: GlobalConfig = {
+  infura: {
+    key: process.env.NEXT_PUBLIC_INFURA_KEY
+  }
+}
+
 export interface ChainConfig {
   id: number
   name: string
