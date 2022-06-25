@@ -18,6 +18,10 @@ if (!process.env.NEXT_PUBLIC_INVESTMENT_CONTRACT) {
   throw new Error('Missing NEXT_PUBLIC_INVESTMENT_CONTRACT environment variable')
 }
 
+if (!process.env.NEXT_PUBLIC_CLOSE_INVESTMENT_CONTRACT) {
+  throw new Error('Missing NEXT_PUBLIC_CLOSE_INVESTMENT_CONTRACT environment variable')
+}
+
 export interface GlobalConfig {
   infura: {
     key: string
@@ -50,6 +54,7 @@ export interface ChainConfig {
   }
   contracts: {
     investment: string
+    closeInvestment: string
   }
 }
 
@@ -73,7 +78,8 @@ export const chainConfig: ChainConfig[] = [
       key: process.env.NEXT_PUBLIC_TATUM_KEY
     },
     contracts: {
-      investment: process.env.NEXT_PUBLIC_INVESTMENT_CONTRACT
+      investment: process.env.NEXT_PUBLIC_INVESTMENT_CONTRACT,
+      closeInvestment: process.env.NEXT_PUBLIC_CLOSE_INVESTMENT_CONTRACT
     }
   },
   {
@@ -95,7 +101,8 @@ export const chainConfig: ChainConfig[] = [
       key: process.env.NEXT_PUBLIC_TATUM_TESTNET_KEY
     },
     contracts: {
-      investment: process.env.NEXT_PUBLIC_INVESTMENT_CONTRACT
+      investment: process.env.NEXT_PUBLIC_INVESTMENT_CONTRACT,
+      closeInvestment: process.env.NEXT_PUBLIC_CLOSE_INVESTMENT_CONTRACT
     }
   }
 ]

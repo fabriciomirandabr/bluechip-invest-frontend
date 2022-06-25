@@ -12,7 +12,9 @@ export default function Home() {
       {!account && <WalletButton />}
       <p>Dev Crypto 🇧🇷</p>
       {account && (
-        <button onClick={() => investmentService(4, account).create('0x46bEF163D6C470a4774f9585F3500Ae3b642e751', 'Blocks', 'BLC')}>
+        <button
+          onClick={() => investmentService(4, account).createInvestment('0x46bEF163D6C470a4774f9585F3500Ae3b642e751', 'Blocks', 'BLC')}
+        >
           Test Create Investment
         </button>
       )}
@@ -22,6 +24,8 @@ export default function Home() {
         </button>
       )}
       {account && <button onClick={() => investmentService(4, account).removeAllMoney('60')}>Test Remove All Money</button>}
+      {account && <button onClick={() => investmentService(4, account).closeInvestment('60', '0x')}>Test Close Round</button>}
+      {account && <button onClick={() => investmentService(4, account).claimFractions('60')}>Test Claim Fractions</button>}
     </div>
   )
 }
