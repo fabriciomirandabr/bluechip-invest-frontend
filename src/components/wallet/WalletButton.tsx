@@ -4,20 +4,19 @@ import styled from 'styled-components'
 import Web3 from 'web3'
 import Web3Modal from 'web3modal'
 import { globalConfig } from '../../config'
-import { useAccount } from '../../hooks/useAccount'
 import { colors } from '../../styles/theme'
-import { chainToName, shortAddress } from '../../utils'
-import { Account } from '../../variables/AccountVariable'
+import { chainToName } from '../../utils'
+import { Account, accountVar } from '../../variables/AccountVariable'
 
 import Image from 'next/image'
 
-import Jazzicon, { jsNumberForAddress } from 'react-jazzicon'
 import icon from '../../../public/assets/wallet_connect_icon.png'
 
 export default function WalletButton() {
-  const { account, setAccount } = useAccount()
   const [openModal, setOpenModal] = useState<boolean>(false)
   const onClick = () => setOpenModal(true)
+
+  console.log('Wallet Button')
 
   useEffect(() => {
     const providerOptions = {
@@ -51,7 +50,7 @@ export default function WalletButton() {
           web3
         }
 
-        setAccount(account)
+        accountVar(account)
         listenEvents(provider, account)
       }
 
@@ -92,7 +91,7 @@ export default function WalletButton() {
         const address = accounts[0]
         const { web3 } = account
         const chainId = await web3.eth.net.getId()
-        setAccount({
+        accountVar({
           ...account,
           address,
           chainId,
@@ -102,7 +101,7 @@ export default function WalletButton() {
       provider.on('chainChanged', async () => {
         const { web3 } = account
         const chainId = await web3.eth.net.getId()
-        setAccount({
+        accountVar({
           ...account,
           chainId,
           chainName: chainToName(chainId)
@@ -111,23 +110,13 @@ export default function WalletButton() {
     }
 
     onConnect()
-  }, [openModal, setAccount])
+  }, [openModal])
 
   return (
-    <>
-      {!account?.address && (
-        <Button onClick={onClick}>
-          <Image src={icon} width={24} height={16} />
-          <span>Connect Wallet</span>
-        </Button>
-      )}
-      {account?.address && (
-        <Button onClick={onClick}>
-          <Jazzicon diameter={24} seed={jsNumberForAddress(account.address || '0')} />
-          <span>{shortAddress(account.address, 6, -6)}</span>
-        </Button>
-      )}
-    </>
+    <Button onClick={onClick}>
+      <Image src={icon} width={24} height={16} />
+      <span>Connect Wallet</span>
+    </Button>
   )
 }
 
