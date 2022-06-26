@@ -72,7 +72,7 @@ export default function InvestmentRound({ investment, investmentRound, chainId, 
               )}
             </Buyers>
           ))}
-          {!investment.buyers.length && <div>No buyers</div>}
+          {!investment.buyers.length && <div>Be Investor, start with any value</div>}
 
           {investment.status === 'CREATED' && (
             <div>
