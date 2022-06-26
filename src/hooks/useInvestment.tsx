@@ -6,8 +6,7 @@ export const useInvestment = (collectionAddress: string, chainId: number) => {
     variables: {
       collectionAddress,
       chainId: chainId
-    },
-    pollInterval: 500
+    }
   })
 
   return {
