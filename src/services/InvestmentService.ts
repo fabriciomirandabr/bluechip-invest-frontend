@@ -2,6 +2,8 @@ import axios from 'axios'
 import BigNumber from 'bignumber.js'
 import { v4 as uuid } from 'uuid'
 import { configByChain } from '../config'
+import { GQLClient } from '../graphql/GQLClient'
+import { FinishRoundData, FinishRoundVars, FINISH_ROUND_MUTATION } from '../graphql/query/FinishRound'
 import { units } from '../utils'
 import { Account } from '../variables/AccountVariable'
 
@@ -258,6 +260,11 @@ export function investmentService(chainId: number, account: Account): Investment
       const txConfig = JSON.parse(data.serializedTransaction)
       txConfig.from = account.address
       const tx = await account.web3.eth.sendTransaction(txConfig)
+
+      await GQLClient.mutate<FinishRoundData, FinishRoundVars>({
+        variables: { chainId, listingId: investmentId },
+        mutation: FINISH_ROUND_MUTATION
+      })
 
       console.log('tx', tx)
     },
