@@ -10,9 +10,7 @@ export const useInvestment = (collectionAddress: string, chainId: number) => {
     variables: {
       collectionAddress,
       chainId: chainId
-    },
-    pollInterval: 3000,
-    fetchPolicy: 'network-only'
+    }
   })
 
   useEffect(() => {

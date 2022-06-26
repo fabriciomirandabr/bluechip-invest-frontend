@@ -16,7 +16,7 @@ export interface InvestmentService {
   claimFractions(investmentId: string): Promise<void>
 }
 
-export function investmentService(chainId: number, account: Account): InvestmentService {
+export function investmentService(chainId: number, account: Account, callback: any): InvestmentService {
   return {
     async createInvestment(collectionAddress: string, name: string, symbol: string) {
       // Reservoir Oracle API - Get Floor Price
@@ -103,6 +103,7 @@ export function investmentService(chainId: number, account: Account): Investment
         // Wallet Connect - Execute Transaction
         const tx = await account.web3.eth.sendTransaction(txConfig)
         loadingVar(false)
+        callback()
       } else {
         console.error('Reservoir Oracle not found NFT')
       }
@@ -159,6 +160,7 @@ export function investmentService(chainId: number, account: Account): Investment
       // Wallet Connect - Execute Transaction
       const tx = await account.web3.eth.sendTransaction(txConfig)
       loadingVar(false)
+      callback()
     },
     async removeAllMoney(investmentId: string) {
       // Tatum - Prepare Transaction
@@ -205,6 +207,7 @@ export function investmentService(chainId: number, account: Account): Investment
       // Wallet Connect - Execute Transaction
       const tx = await account.web3.eth.sendTransaction(txConfig)
       loadingVar(false)
+      callback()
     },
     async closeInvestment(investmentId: string, payload: string) {
       // Tatum - Prepare Transaction
@@ -255,6 +258,7 @@ export function investmentService(chainId: number, account: Account): Investment
       // Wallet Connect - Execute Transaction
       const tx = await account.web3.eth.sendTransaction(txConfig)
       loadingVar(false)
+      callback()
 
       await GQLClient.mutate<FinishRoundData, FinishRoundVars>({
         variables: { chainId, listingId: investmentId },
@@ -309,6 +313,7 @@ export function investmentService(chainId: number, account: Account): Investment
       // Wallet Connect - Execute Transaction
       const tx = await account.web3.eth.sendTransaction(txConfig)
       loadingVar(false)
+      callback()
     }
   }
 }

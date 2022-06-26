@@ -14,16 +14,17 @@ export interface InvestmentRoundProps {
   investmentRound: InvestmentRoundItem
   chainId: number
   lastRound?: boolean
+  callback: any
 }
 
-export default function InvestmentRound({ investment, investmentRound, chainId, lastRound }: InvestmentRoundProps) {
+export default function InvestmentRound({ investment, investmentRound, chainId, lastRound, callback }: InvestmentRoundProps) {
   const { account } = useAccount()
 
   const [value, setValue] = useState('')
 
   const addMoney = async () => {
     if (account && investmentRound.activeRound) {
-      investmentService(chainId, account).addMoney(
+      investmentService(chainId, account, callback).addMoney(
         investmentRound.activeRound.id,
         units(value, 18),
         units(investmentRound.activeRound.amount, 18)
@@ -33,13 +34,16 @@ export default function InvestmentRound({ investment, investmentRound, chainId, 
 
   const removeAllMoney = async () => {
     if (account && investmentRound.activeRound) {
-      investmentService(chainId, account).removeAllMoney(investmentRound.activeRound.id)
+      investmentService(chainId, account, callback).removeAllMoney(investmentRound.activeRound.id)
     }
   }
 
   const closeInvestment = async () => {
     if (account && investmentRound.activeRound) {
-      investmentService(chainId, account).closeInvestment(investmentRound.activeRound.id, investmentRound.activeRound.acquiringData)
+      investmentService(chainId, account, callback).closeInvestment(
+        investmentRound.activeRound.id,
+        investmentRound.activeRound.acquiringData
+      )
     }
   }
 
@@ -48,7 +52,7 @@ export default function InvestmentRound({ investment, investmentRound, chainId, 
       account &&
       investment.buyers.filter(buyer => buyer.buyer.toLowerCase() === account.address.toLowerCase() && buyer.fractionsCount !== '0').length
     ) {
-      investmentService(chainId, account).claimFractions(investment.id)
+      investmentService(chainId, account, callback).claimFractions(investment.id)
     }
   }
 

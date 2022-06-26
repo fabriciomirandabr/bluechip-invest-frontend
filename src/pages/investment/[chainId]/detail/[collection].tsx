@@ -13,12 +13,12 @@ interface InvestmentDetailProps {
 }
 
 export default function InvestmentDetail({ chainId, collection }: InvestmentDetailProps) {
-  const { data, loading, error } = useInvestment(collection, chainId)
+  const { data, loading, error, refetch } = useInvestment(collection, chainId)
   const { account } = useAccount()
 
   const startInvestment = () => {
     if (account && data) {
-      investmentService(chainId, account).createInvestment(
+      investmentService(chainId, account, refetch).createInvestment(
         collection,
         `${data.investment.name} Fractions`,
         `${data.investment.name.substring(0, 3)}`
@@ -43,7 +43,12 @@ export default function InvestmentDetail({ chainId, collection }: InvestmentDeta
               </Title>
 
               {data && data.investment.activeRound && (
-                <InvestmentRound investmentRound={data.investment} investment={data.investment.activeRound} chainId={chainId} />
+                <InvestmentRound
+                  investmentRound={data.investment}
+                  investment={data.investment.activeRound}
+                  chainId={chainId}
+                  callback={refetch}
+                />
               )}
             </div>
             <div>
@@ -52,7 +57,7 @@ export default function InvestmentDetail({ chainId, collection }: InvestmentDeta
               </Title>
               {data &&
                 data.investment.lastRounds.map(round => (
-                  <InvestmentRound investmentRound={data.investment} investment={round} chainId={chainId} lastRound />
+                  <InvestmentRound investmentRound={data.investment} investment={round} chainId={chainId} lastRound callback={refetch} />
                 ))}
             </div>
           </div>
