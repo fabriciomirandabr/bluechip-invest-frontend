@@ -159,14 +159,11 @@ const { Container, Card } = {
     > div:nth-child(4),
     > div:nth-child(5),
     > div:nth-child(6),
-    > div:nth-child(7),
-    > div:nth-child(8),
-    > div:nth-child(9),
-    > div:nth-child(10) {
+    > div:nth-child(7) {
       grid-template-columns: 1fr 1fr;
     }
 
-    > div:nth-child(5) {
+    > div:nth-child(7) {
       margin-bottom: 16px;
     }
   `

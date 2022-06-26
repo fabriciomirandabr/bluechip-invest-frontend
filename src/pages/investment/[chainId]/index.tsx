@@ -38,7 +38,7 @@ const { Container } = {
     display: grid;
     align-items: center;
     justify-content: center;
-    grid-auto-columns: auto;
+    grid-template-columns: 300px 300px 300px;
     gap: 64px;
     margin: 128px 32px;
   `
