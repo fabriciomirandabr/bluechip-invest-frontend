@@ -1,12 +1,12 @@
 import { useState } from 'react'
+import Jazzicon, { jsNumberForAddress } from 'react-jazzicon'
 import styled from 'styled-components'
-import {
-  InvestmentRoundCollection as InvestmentRoundItem,
-  InvestmentRoundItem as InvestmentRoundFull
-} from '../../graphql/query/Investment'
+import { InvestmentRoundFull, InvestmentRoundItem } from '../../graphql/query/Investment'
 import { useAccount } from '../../hooks/useAccount'
 import { investmentService } from '../../services/InvestmentService'
-import { units } from '../../utils'
+import { colors } from '../../styles/theme'
+import { shortAddress, units } from '../../utils'
+import Button from '../shared/Button'
 import InvestmentCard from './InvestmentCard'
 
 export interface InvestmentRoundProps {
@@ -54,31 +54,29 @@ export default function InvestmentRound({ investment, investmentRound, chainId, 
 
   return (
     <Container>
-      <div>{investment && <InvestmentCard collection={investmentRound.contractAddress} chainId={chainId} detail />}</div>
-      <div>
-        {investment && (
-          <>
-            {lastRound && (
+      {investment && <InvestmentCard collection={investmentRound.contractAddress} chainId={chainId} detail />}
+
+      {investment && (
+        <Card>
+          {investment.buyers.map(buyerItem => (
+            <Buyers>
               <div>
-                <button>FLIP ON OPEN SEA BY 20% MORE</button>
-                <button>SELL PARTIAL FRACTIONS ON UNISWAP</button>
+                <div>
+                  <Jazzicon diameter={24} seed={jsNumberForAddress(buyerItem.buyer || '0')} />
+                </div>
+                <div>{shortAddress(buyerItem.buyer, 6, -6)}</div>
+                <div>{buyerItem.amount} ETH</div>
               </div>
-            )}
+              {buyerItem.buyer.toLocaleLowerCase() === account?.address.toLocaleLowerCase() && (
+                <Button onClick={() => removeAllMoney()}>Remove Money</Button>
+              )}
+            </Buyers>
+          ))}
+          {!investment.buyers.length && <div>No buyers</div>}
+
+          {investment.status === 'CREATED' && (
             <div>
-              {investment.buyers.map(buyerItem => (
-                <>
-                  <span>
-                    {buyerItem.buyer} | {buyerItem.amount} ETH
-                  </span>
-                  {buyerItem.buyer.toLocaleLowerCase() === account?.address.toLocaleLowerCase() && (
-                    <button onClick={() => removeAllMoney()}>X</button>
-                  )}
-                </>
-              ))}
-              {!investment.buyers.length && <div>No buyers</div>}
-            </div>
-            <div>
-              <input
+              <Input
                 value={value}
                 onChange={e => setValue(e.target.value)}
                 disabled={
@@ -88,39 +86,47 @@ export default function InvestmentRound({ investment, investmentRound, chainId, 
                 }
               />
             </div>
-            <div>
-              {!account?.address && <button disabled>Connect Wallet</button>}
-              {account?.address &&
-                !lastRound &&
-                investment.status === 'CREATED' &&
-                Number(investment.amount) < Number(investmentRound.floorPrice) * 1.1 && <button onClick={addMoney}>Add Money</button>}
-              {account?.address &&
-                investment.status === 'CREATED' &&
-                Number(investment.amount) >= Number(investmentRound.floorPrice) * 1.1 && (
-                  <button onClick={closeInvestment}>Close Round</button>
-                )}
+          )}
 
-              {!!(
-                account &&
+          <div>
+            {!account?.address && <Button disabled>Connect Wallet</Button>}
+            {account?.address &&
+              !lastRound &&
+              investment.status === 'CREATED' &&
+              Number(investment.amount) < Number(investmentRound.floorPrice) * 1.1 && <Button onClick={addMoney}>Add Money</Button>}
+            {account?.address &&
+              investment.status === 'CREATED' &&
+              Number(investment.amount) >= Number(investmentRound.floorPrice) * 1.1 && (
+                <Button onClick={closeInvestment}>Close Round</Button>
+              )}
+
+            {!!(
+              account?.address &&
+              investment.buyers.filter(buyer => buyer.buyer.toLowerCase() === account.address.toLowerCase() && buyer.fractionsCount !== '0')
+                .length
+            ) &&
+              lastRound && <Button onClick={claimFractions}>Claim Fractions</Button>}
+            {lastRound &&
+              !(
+                account?.address &&
                 investment.buyers.filter(
                   buyer => buyer.buyer.toLowerCase() === account.address.toLowerCase() && buyer.fractionsCount !== '0'
                 ).length
-              ) && <button onClick={claimFractions}>Claim Fractions</button>}
-              {!(
-                account &&
-                investment.buyers.filter(
-                  buyer => buyer.buyer.toLowerCase() === account.address.toLowerCase() && buyer.fractionsCount !== '0'
-                ).length
-              ) && <button>Fractions Claimed</button>}
+              ) && <Button disabled>Fractions Claimed</Button>}
+          </div>
+          {lastRound && (
+            <div>
+              <Button margin>Flip NFT on Open Sea</Button>
+              <Button margin>Sell Fractions on Uniswap</Button>
             </div>
-          </>
-        )}
-      </div>
+          )}
+        </Card>
+      )}
     </Container>
   )
 }
 
-const { Container } = {
+const { Container, Card, Input, Buyers } = {
   Container: styled.div`
     display: grid;
     grid-template-columns: 300px 300px;
@@ -128,5 +134,44 @@ const { Container } = {
     margin-bottom: 48px;
     align-items: flex-start;
     justify-content: center;
+  `,
+  Card: styled.div`
+    padding: 24px;
+    background: ${colors.white};
+    border-radius: 32px;
+    box-shadow: 3px 3px 3px 0px rgba(0, 0, 0, 0.15);
+
+    > div:not(:last-of-type) {
+      margin-bottom: 16px;
+      display: grid;
+    }
+  `,
+  Input: styled.input`
+    background: ${colors.grayLight[300]};
+    padding: 8px 8px;
+    border: 0;
+    border-radius: 8px;
+    font-size: 16px;
+    line-height: 20px;
+    box-shadow: 1px 1px 1px 0px rgba(0, 0, 0, 0.15);
+    color: ${colors.blue[900]};
+
+    &:focus {
+      outline: none;
+      border: 0;
+    }
+  `,
+  Buyers: styled.div`
+    > div:nth-child(1) {
+      margin-bottom: 16px;
+      display: grid;
+      grid-template-columns: 24px auto auto;
+      gap: 8px;
+      align-items: center;
+
+      > div:last-child {
+        text-align: end;
+      }
+    }
   `
 }

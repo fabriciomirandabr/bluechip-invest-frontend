@@ -48,7 +48,7 @@ export default function InvestmentDetail({ chainId, collection }: InvestmentDeta
             </div>
             <div>
               <Title>
-                <h1>LAST INVESTMENT ROUND</h1>
+                <h1>LAST INVESTMENTS ROUNDS</h1>
               </Title>
               {data &&
                 data.investment.lastRounds.map(round => (

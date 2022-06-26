@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client'
 
-export interface InvestmentRoundItem {
+export interface InvestmentRoundFull {
   id: string
   status: 'CREATED'
   image?: string
@@ -23,14 +23,14 @@ export interface InvestmentRoundItem {
   }[]
 }
 
-export interface InvestmentRoundCollection {
-  activeRound?: InvestmentRoundItem
+export interface InvestmentRoundItem {
+  activeRound?: InvestmentRoundFull
   contractAddress: string
   description: string
   floorPrice: number
   floorSaleChangeToday: number
   image: string
-  lastRounds: InvestmentRoundItem[]
+  lastRounds: InvestmentRoundFull[]
   name: string
   slug: string
   volumeToday: number
@@ -43,7 +43,7 @@ export interface InvestmentVars {
 }
 
 export interface InvestmentData {
-  investment: InvestmentRoundCollection
+  investment: InvestmentRoundItem
 }
 
 export const INVESTMENT_QUERY = gql`

@@ -13,7 +13,7 @@ interface InvestmentCardProps {
   detail?: boolean
 }
 
-export default function InvestmentCard({ collection, chainId, detail: detail }: InvestmentCardProps) {
+export default function InvestmentCard({ collection, chainId, detail }: InvestmentCardProps) {
   const { data, loading, error } = useInvestment(collection, chainId)
   const { account } = useAccount()
 
@@ -34,23 +34,26 @@ export default function InvestmentCard({ collection, chainId, detail: detail }: 
           <div>
             <Image src={data.investment.image} width={300} height={300} unoptimized />
           </div>
-
-          {/* <div>
-              <span>Target ID: </span>
-              {investment.target.tokenId}
-            </div>
-            <div>
-              <span>Target Price: </span>
-              {Number(investmentRound.floorPrice) * 1.1}
-            </div>
-            <div>
-              <span>Progress: </span>
-              {new BigNumber(investment.amount || 0).div(new BigNumber(investmentRound.floorPrice)).toFixed(2)}%
-            </div>
-            <div>
-              <span>Accumulated: </span>
-              {investment.amount} ETH
-            </div> */}
+          {/* {detail && (
+            <>
+              <div>
+                <span>Target ID: </span>
+                {investment.target.tokenId}
+              </div>
+              <div>
+                <span>Target Price: </span>
+                {Number(investmentRound.floorPrice) * 1.1}
+              </div>
+              <div>
+                <span>Progress: </span>
+                {new BigNumber(investment.amount || 0).div(new BigNumber(investmentRound.floorPrice)).toFixed(2)}%
+              </div>
+              <div>
+                <span>Accumulated: </span>
+                {investment.amount} ETH
+              </div>
+            </>
+          )} */}
 
           <div>{data.investment.name}</div>
           <div>
@@ -69,10 +72,13 @@ export default function InvestmentCard({ collection, chainId, detail: detail }: 
             <div>Change Today: </div>
             <div>{data.investment.floorSaleChangeToday.toFixed(2)}%</div>
           </div>
-          <div>
-            <div>Active Investors:</div>
-            <div>{data.investment.activeRound?.buyersCount || '0'}</div>
-          </div>
+          {!detail && (
+            <div>
+              <div>Active Investors:</div>
+              <div>{data.investment.activeRound?.buyersCount || '0'}</div>
+            </div>
+          )}
+
           {!data.investment.activeRound?.buyersCount && (
             <div>
               {account && chainId === account.chainId && <Button onClick={startInvestment}>Start Round</Button>}

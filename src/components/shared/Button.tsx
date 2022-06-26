@@ -5,11 +5,12 @@ interface ButtonProps {
   onClick?: () => void
   children?: React.ReactNode
   disabled?: boolean
+  margin?: boolean
 }
 
-export default function Button({ onClick, children, disabled }: ButtonProps) {
+export default function Button({ onClick, children, disabled, margin }: ButtonProps) {
   return (
-    <Container onClick={onClick} disabled={disabled} className={`${disabled && 'disabled'}`}>
+    <Container onClick={onClick} disabled={disabled} className={`${disabled && 'disabled'} ${margin && 'margin'}`}>
       {children}
     </Container>
   )
@@ -30,6 +31,7 @@ const { Container } = {
     display: grid;
     grid-template-columns: 1fr;
     gap: 8px;
+    width: 100%;
 
     &:hover {
       background-color: ${colors.blue[600]};
@@ -38,6 +40,10 @@ const { Container } = {
 
     &.disabled {
       background-color: ${colors.grayLight[700]};
+    }
+
+    &.margin {
+      margin-bottom: 16px;
     }
   `
 }
