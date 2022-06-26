@@ -7,7 +7,7 @@ import { globalConfig } from '../../config'
 import { useAccount } from '../../hooks/useAccount'
 import { colors } from '../../styles/theme'
 import { chainToName, shortAddress } from '../../utils'
-import { Account, accountVar } from '../../variables/AccountVariable'
+import { Account } from '../../variables/AccountVariable'
 
 import Image from 'next/image'
 
@@ -60,7 +60,6 @@ export default function WalletButton() {
           console.log('connected', provider)
         })
         web3Modal.on('disconnect', provider => {
-          accountVar(undefined)
           console.log('disconnected', provider)
         })
         web3Modal.on('close', provider => {
