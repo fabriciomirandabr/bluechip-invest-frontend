@@ -114,6 +114,10 @@ export function investmentService(chainId: number, account: Account): Investment
       // IPFS - Save Investment
     },
     async addMoney(investmentId: string, amount: string, reservePrice: string) {
+      console.log('investmentId', investmentId)
+      console.log('amount', amount)
+      console.log('reservePrice', reservePrice)
+
       // Tatum - Prepare Transaction
       const prepareTx = await axios.post<{ signatureId: string }>(
         `${configByChain(chainId).tatum.api}/ethereum/smartcontract`,

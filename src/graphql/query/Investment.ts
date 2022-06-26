@@ -9,6 +9,9 @@ export interface InvestmentData {
   investment: {
     activeRound?: {
       id: string
+      status: 'CREATED'
+      image?: string
+      amount: string
       target: {
         collection: {
           name: string
@@ -19,6 +22,12 @@ export interface InvestmentData {
       acquiringData: string
       reservePrice: string
       buyersCount: string
+      buyers: {
+        amount: string
+        buyer: string
+        fractionsCount: string
+        ownership: string
+      }[]
     }
     contractAddress: string
     description: string
@@ -47,6 +56,9 @@ export const INVESTMENT_QUERY = gql`
     investment(collectionAddress: $collectionAddress, chainId: $chainId) {
       activeRound {
         id
+        status
+        amount
+        image
         target {
           collection {
             name
@@ -57,6 +69,12 @@ export const INVESTMENT_QUERY = gql`
         acquiringData
         reservePrice
         buyersCount
+        buyers {
+          amount
+          buyer
+          fractionsCount
+          ownership
+        }
       }
       contractAddress
       description

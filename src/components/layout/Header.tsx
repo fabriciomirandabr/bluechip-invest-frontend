@@ -1,13 +1,22 @@
 import Image from 'next/image'
+import Link from 'next/link'
 import styled from 'styled-components'
 import logo from '../../../public/assets/bluechip_invest.png'
 import WalletButton from '../wallet/WalletButton'
 
-export default function Header() {
+interface HeaderProps {
+  chainId: number
+}
+
+export default function Header({ chainId }: HeaderProps) {
   return (
     <Container>
       <div>
-        <Image src={logo} width={207} height={48} />
+        <Link href={`/investment/${chainId}`}>
+          <a>
+            <Image src={logo} width={207} height={48} />
+          </a>
+        </Link>
       </div>
       <div>
         <WalletButton />

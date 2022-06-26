@@ -1,9 +1,13 @@
+import BigNumber from 'bignumber.js'
 import { GetServerSideProps } from 'next'
 import Image from 'next/image'
+import { useState } from 'react'
 import styled from 'styled-components'
 import Header from '../../../../components/layout/Header'
 import { useAccount } from '../../../../hooks/useAccount'
 import { useInvestment } from '../../../../hooks/useInvestment'
+import { investmentService } from '../../../../services/InvestmentService'
+import { units } from '../../../../utils'
 
 interface InvestmentDetailProps {
   chainId: number
@@ -14,9 +18,27 @@ export default function InvestmentDetail({ chainId, collection }: InvestmentDeta
   const { data, loading, error } = useInvestment(collection, chainId)
   const { account } = useAccount()
 
+  const [value, setValue] = useState('')
+
+  const addMoney = async () => {
+    if (account && data && data.investment.activeRound) {
+      investmentService(chainId, account).addMoney(
+        data.investment.activeRound.id,
+        units(value, 18),
+        units(data.investment.activeRound.amount, 18)
+      )
+    }
+  }
+
+  const removeAllMoney = async () => {
+    if (account && data && data.investment.activeRound) {
+      investmentService(chainId, account).removeAllMoney(data.investment.activeRound.id)
+    }
+  }
+
   return (
     <div>
-      <Header />
+      <Header chainId={chainId} />
       <main>
         <Container>
           <div>
@@ -30,7 +52,7 @@ export default function InvestmentDetail({ chainId, collection }: InvestmentDeta
               {data && data.investment && (
                 <>
                   <div>
-                    <Image src={data.investment.image} width={100} height={100} unoptimized />
+                    <Image src={String(data.investment.activeRound?.image)} width={100} height={100} unoptimized />
                   </div>
                   <div>
                     <span>Target ID: </span>
@@ -42,11 +64,11 @@ export default function InvestmentDetail({ chainId, collection }: InvestmentDeta
                   </div>
                   <div>
                     <span>Progress: </span>
-                    ???????
+                    {new BigNumber(data.investment.activeRound?.amount || 0).div(new BigNumber(data.investment.floorPrice)).toFixed(2)}%
                   </div>
                   <div>
                     <span>Accumulated: </span>
-                    ???????
+                    {data.investment.activeRound?.amount} ETH
                   </div>
                   <div>
                     <hr />
@@ -78,51 +100,32 @@ export default function InvestmentDetail({ chainId, collection }: InvestmentDeta
                 </>
               )}
             </div>
-            <div>ACTIONS</div>
-          </div>
-        </Container>
-        <Container>
-          <div>
-            <h2>CLOSED INVESTMENT ROUND </h2>
-          </div>
-          <div>
             <div>
-              {loading && <div>loading</div>}
-              {error && <div>error</div>}
-              {!data && <div>empty</div>}
               {data && data.investment && (
                 <>
                   <div>
-                    <Image src={data.investment.image} width={100} height={100} unoptimized />
+                    {data.investment.activeRound?.buyers.map(buyerItem => (
+                      <>
+                        <span>
+                          {buyerItem.buyer} | {buyerItem.amount} ETH
+                        </span>
+                        {buyerItem.buyer.toLocaleLowerCase() === account?.address.toLocaleLowerCase() && (
+                          <button onClick={() => removeAllMoney()}>X</button>
+                        )}
+                      </>
+                    ))}
+                    {!data.investment.activeRound?.buyers.length && <div>No buyers</div>}
                   </div>
                   <div>
-                    <span>Collection: </span>
-                    {data.investment.name}
+                    <input value={value} onChange={e => setValue(e.target.value)} disabled={!account?.address} />
                   </div>
                   <div>
-                    <span>Whale Rank: </span>
-                    {data.investment.whalesRankToday}
-                  </div>
-                  <div>
-                    <span>Volume Today: </span>
-                    {data.investment.volumeToday} ETH
-                  </div>
-                  <div>
-                    <span>Floor Price: </span>
-                    {data.investment.floorPrice} ETH
-                  </div>
-                  <div>
-                    <span>Change Today: </span>
-                    {data.investment.floorSaleChangeToday}%
-                  </div>
-                  <div>
-                    <span>Active Investors: </span>
-                    {data.investment.activeRound?.buyersCount}
+                    {!account?.address && <button disabled>Connect Wallet</button>}
+                    {account?.address && data.investment.activeRound?.status === 'CREATED' && <button onClick={addMoney}>Add Money</button>}
                   </div>
                 </>
               )}
             </div>
-            <div>ACTIONS</div>
           </div>
         </Container>
       </main>

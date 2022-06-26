@@ -12,7 +12,7 @@ export default function Investments({ chainId }: InvestmentsProps) {
 
   return (
     <div>
-      <Header />
+      <Header chainId={chainId} />
       <main>
         {collections.map(collection => (
           <InvestmentCard collection={collection} chainId={chainId} />
