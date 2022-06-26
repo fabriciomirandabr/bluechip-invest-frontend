@@ -20,6 +20,16 @@ export default function InvestmentDetail({ chainId, collection }: InvestmentDeta
 
   const [value, setValue] = useState('')
 
+  const startInvestment = () => {
+    if (account && data) {
+      investmentService(chainId, account).createInvestment(
+        collection,
+        `${data.investment.name} Fractions`,
+        `${data.investment.name.substring(0, 3)}`
+      )
+    }
+  }
+
   const addMoney = async () => {
     if (account && data && data.investment.activeRound) {
       investmentService(chainId, account).addMoney(
@@ -36,11 +46,22 @@ export default function InvestmentDetail({ chainId, collection }: InvestmentDeta
     }
   }
 
+  const closeInvestment = async () => {
+    if (account && data && data.investment.activeRound) {
+      investmentService(chainId, account).closeInvestment(data.investment.activeRound.id, data.investment.activeRound.acquiringData)
+    }
+  }
+
   return (
     <div>
       <Header chainId={chainId} />
       <main>
         <Container>
+          {data && !data.investment.activeRound && (
+            <div>
+              <button onClick={startInvestment}>Start Round</button>
+            </div>
+          )}
           <div>
             <h1>ACTIVE INVESTMENT ROUND</h1>
           </div>
@@ -60,7 +81,7 @@ export default function InvestmentDetail({ chainId, collection }: InvestmentDeta
                   </div>
                   <div>
                     <span>Target Price: </span>
-                    {data.investment.floorPrice}
+                    {Number(data.investment.floorPrice) * 1.05}
                   </div>
                   <div>
                     <span>Progress: </span>
@@ -117,11 +138,29 @@ export default function InvestmentDetail({ chainId, collection }: InvestmentDeta
                     {!data.investment.activeRound?.buyers.length && <div>No buyers</div>}
                   </div>
                   <div>
-                    <input value={value} onChange={e => setValue(e.target.value)} disabled={!account?.address} />
+                    <input
+                      value={value}
+                      onChange={e => setValue(e.target.value)}
+                      disabled={
+                        !data.investment.activeRound ||
+                        !account?.address ||
+                        (data.investment.activeRound?.status === 'CREATED' &&
+                          Number(data.investment.activeRound?.amount) >= Number(data.investment.floorPrice) * 1.05)
+                      }
+                    />
                   </div>
                   <div>
                     {!account?.address && <button disabled>Connect Wallet</button>}
-                    {account?.address && data.investment.activeRound?.status === 'CREATED' && <button onClick={addMoney}>Add Money</button>}
+                    {account?.address &&
+                      data.investment.activeRound?.status === 'CREATED' &&
+                      Number(data.investment.activeRound?.amount) < Number(data.investment.floorPrice) * 1.05 && (
+                        <button onClick={addMoney}>Add Money</button>
+                      )}
+                    {account?.address &&
+                      data.investment.activeRound?.status === 'CREATED' &&
+                      Number(data.investment.activeRound?.amount) >= Number(data.investment.floorPrice) * 1.05 && (
+                        <button onClick={closeInvestment}>Close Round</button>
+                      )}
                   </div>
                 </>
               )}

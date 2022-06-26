@@ -61,7 +61,7 @@ export default function InvestmentCard({ collection, chainId }: InvestmentCardPr
           </div>
           {!data.investment.activeRound?.buyersCount && (
             <div>
-              {account && chainId === account.chainId && <button onClick={startInvestment}>Start Investment</button>}
+              {account && chainId === account.chainId && <button onClick={startInvestment}>Start Round</button>}
               {account && chainId !== account.chainId && <button disabled>Change Network</button>}
             </div>
           )}
