@@ -54,7 +54,15 @@ export default function InvestmentRound({ investment, investmentRound, chainId, 
 
   return (
     <Container>
-      {investment && <InvestmentCard collection={investmentRound.contractAddress} chainId={chainId} detail />}
+      {investment && (
+        <InvestmentCard
+          investment={investment}
+          collection={investmentRound.contractAddress}
+          floorPrice={investmentRound.floorPrice}
+          chainId={chainId}
+          detail
+        />
+      )}
 
       {investment && (
         <Card>
@@ -107,17 +115,23 @@ export default function InvestmentRound({ investment, investmentRound, chainId, 
             ) &&
               lastRound && <Button onClick={claimFractions}>Claim Fractions</Button>}
             {lastRound &&
-              !(
-                account?.address &&
-                investment.buyers.filter(
-                  buyer => buyer.buyer.toLowerCase() === account.address.toLowerCase() && buyer.fractionsCount !== '0'
-                ).length
-              ) && <Button disabled>Fractions Claimed</Button>}
+              account?.address &&
+              !investment.buyers.filter(
+                buyer => buyer.buyer.toLowerCase() === account.address.toLowerCase() && buyer.fractionsCount !== '0'
+              ).length && <Button disabled>Fractions Claimed</Button>}
           </div>
           {lastRound && (
             <div>
-              <Button margin>Flip NFT on Open Sea</Button>
-              <Button margin>Sell Fractions on Uniswap</Button>
+              {account?.address && (
+                <Button margin onClick={() => alert("Time's Up")}>
+                  Flip NFT on Open Sea
+                </Button>
+              )}
+              {account?.address && (
+                <Button margin onClick={() => alert("Time's Up")}>
+                  Sell Fractions on Uniswap
+                </Button>
+              )}
             </div>
           )}
         </Card>

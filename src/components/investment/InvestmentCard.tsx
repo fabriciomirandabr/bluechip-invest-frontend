@@ -1,6 +1,8 @@
+import BigNumber from 'bignumber.js'
 import Image from 'next/image'
 import Link from 'next/link'
 import styled from 'styled-components'
+import { InvestmentRoundFull } from '../../graphql/query/Investment'
 import { useAccount } from '../../hooks/useAccount'
 import { useInvestment } from '../../hooks/useInvestment'
 import { investmentService } from '../../services/InvestmentService'
@@ -11,9 +13,11 @@ interface InvestmentCardProps {
   collection: string
   chainId: number
   detail?: boolean
+  investment?: InvestmentRoundFull
+  floorPrice?: number
 }
 
-export default function InvestmentCard({ collection, chainId, detail }: InvestmentCardProps) {
+export default function InvestmentCard({ collection, chainId, detail, investment, floorPrice }: InvestmentCardProps) {
   const { data, loading, error } = useInvestment(collection, chainId)
   const { account } = useAccount()
 
@@ -32,30 +36,30 @@ export default function InvestmentCard({ collection, chainId, detail }: Investme
       {data && data.investment && (
         <Card>
           <div>
-            <Image src={data.investment.image} width={300} height={300} unoptimized />
+            <Image src={investment?.image || data.investment.image} width={300} height={300} unoptimized />
           </div>
-          {/* {detail && (
-            <>
-              <div>
-                <span>Target ID: </span>
-                {investment.target.tokenId}
-              </div>
-              <div>
-                <span>Target Price: </span>
-                {Number(investmentRound.floorPrice) * 1.1}
-              </div>
-              <div>
-                <span>Progress: </span>
-                {new BigNumber(investment.amount || 0).div(new BigNumber(investmentRound.floorPrice)).toFixed(2)}%
-              </div>
-              <div>
-                <span>Accumulated: </span>
-                {investment.amount} ETH
-              </div>
-            </>
-          )} */}
 
           <div>{data.investment.name}</div>
+          {detail && (
+            <>
+              <div>
+                <div>Target ID:</div>
+                <div>{investment?.target.tokenId}</div>
+              </div>
+              <div>
+                <div>Target Price:</div>
+                <div> {Number(Number(floorPrice) * 1.1).toFixed(5)}</div>
+              </div>
+              <div>
+                <div>Progress:</div>
+                <div>{new BigNumber(investment?.amount || 0).div(new BigNumber(Number(floorPrice))).toFixed(2)}%</div>
+              </div>
+              <div>
+                <div>Accumulated:</div>
+                <div>{investment?.amount} ETH</div>
+              </div>
+            </>
+          )}
           <div>
             <div>Whale Rank:</div>
             <div>{data.investment.whalesRankToday}</div>
@@ -155,11 +159,14 @@ const { Container, Card } = {
     > div:nth-child(4),
     > div:nth-child(5),
     > div:nth-child(6),
-    > div:nth-child(7) {
+    > div:nth-child(7),
+    > div:nth-child(8),
+    > div:nth-child(9),
+    > div:nth-child(10) {
       grid-template-columns: 1fr 1fr;
     }
 
-    > div:nth-child(7) {
+    > div:nth-child(5) {
       margin-bottom: 16px;
     }
   `
