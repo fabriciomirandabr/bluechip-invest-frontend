@@ -104,6 +104,8 @@ section {
 }
 body {
   line-height: 1;
+  background: rgb(89, 140, 244);
+  background: linear-gradient(90deg, rgba(89, 140, 244, 1) 0%, rgba(37, 97, 237, 1) 36%, rgba(27, 74, 203, 1) 75%);
 }
 ol,
 ul {

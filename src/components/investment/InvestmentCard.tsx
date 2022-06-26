@@ -5,6 +5,7 @@ import { useAccount } from '../../hooks/useAccount'
 import { useInvestment } from '../../hooks/useInvestment'
 import { investmentService } from '../../services/InvestmentService'
 import { colors } from '../../styles/theme'
+import Button from '../shared/Button'
 
 interface InvestmentCardProps {
   collection: string
@@ -31,43 +32,40 @@ export default function InvestmentCard({ collection, chainId }: InvestmentCardPr
       {error && <div>error</div>}
       {!data && <div>empty</div>}
       {data && data.investment && (
-        <>
+        <Card>
           <div>
-            <Image src={data.investment.image} width={100} height={100} unoptimized />
+            <Image src={data.investment.image} width={300} height={300} unoptimized />
+          </div>
+          <div>{data.investment.name}</div>
+          <div>
+            <div>Whale Rank:</div>
+            <div>{data.investment.whalesRankToday}</div>
           </div>
           <div>
-            <span>Collection: </span>
-            {data.investment.name}
+            <div>Volume Today: </div>
+            <div>{data.investment.volumeToday} ETH</div>
           </div>
           <div>
-            <span>Whale Rank: </span>
-            {data.investment.whalesRankToday}
+            <div>Floor Price: </div>
+            <div>{data.investment.floorPrice} ETH</div>
           </div>
           <div>
-            <span>Volume Today: </span>
-            {data.investment.volumeToday} ETH
+            <div>Change Today: </div>
+            <div>{data.investment.floorSaleChangeToday.toFixed(2)}%</div>
           </div>
           <div>
-            <span>Floor Price: </span>
-            {data.investment.floorPrice} ETH
-          </div>
-          <div>
-            <span>Change Today: </span>
-            {data.investment.floorSaleChangeToday}%
-          </div>
-          <div>
-            <span>Active Investors: </span>
-            {data.investment.activeRound?.buyersCount}
+            <div>Active Investors:</div>
+            <div>{data.investment.activeRound?.buyersCount || '0'}</div>
           </div>
           {!data.investment.activeRound?.buyersCount && (
             <div>
-              {account && chainId === account.chainId && <button onClick={startInvestment}>Start Round</button>}
-              {account && chainId !== account.chainId && <button disabled>Change Network</button>}
+              {account && chainId === account.chainId && <Button onClick={startInvestment}>Start Round</Button>}
+              {account && chainId !== account.chainId && <Button disabled>Change Network</Button>}
             </div>
           )}
           {!account && (
             <div>
-              <button disabled>Connect Wallet</button>
+              <Button disabled>Connect Wallet</Button>
             </div>
           )}
           {Number(data.investment.activeRound?.buyersCount) === 0 && (
@@ -79,14 +77,59 @@ export default function InvestmentCard({ collection, chainId }: InvestmentCardPr
               )}
             </div>
           )}
-        </>
+        </Card>
       )}
     </Container>
   )
 }
 
-const { Container } = {
+const { Container, Card } = {
   Container: styled.div`
-    background: ${colors.gray[100]};
+    display: grid;
+    margin: 64px 32px;
+  `,
+  Card: styled.div`
+    padding: 24px;
+    background: ${colors.white};
+    border-radius: 32px;
+    box-shadow: 3px 3px 3px 0px rgba(0, 0, 0, 0.15);
+
+    img {
+      border-radius: 16px;
+    }
+
+    > div {
+      margin-bottom: 4px;
+      display: grid;
+
+      > div:nth-child(1) {
+        color: ${colors.gray[500]};
+      }
+    }
+
+    > div:nth-child(1) {
+      grid-template-columns: 1fr;
+      margin-bottom: 16px;
+    }
+
+    > div:nth-child(2) {
+      color: ${colors.blue[500]};
+      font-size: 18px;
+      font-weight: 500;
+      grid-template-columns: 1fr;
+      margin-bottom: 12px;
+    }
+
+    > div:nth-child(3),
+    > div:nth-child(4),
+    > div:nth-child(5),
+    > div:nth-child(6),
+    > div:nth-child(7) {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    > div:nth-child(7) {
+      margin-bottom: 16px;
+    }
   `
 }

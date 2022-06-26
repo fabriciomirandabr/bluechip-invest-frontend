@@ -1,4 +1,5 @@
 import { GetServerSideProps } from 'next'
+import styled from 'styled-components'
 import InvestmentCard from '../../../components/investment/InvestmentCard'
 import Header from '../../../components/layout/Header'
 import useCollections from '../../../hooks/useCollections'
@@ -13,11 +14,11 @@ export default function Investments({ chainId }: InvestmentsProps) {
   return (
     <div>
       <Header chainId={chainId} />
-      <main>
+      <Container>
         {collections.map(collection => (
           <InvestmentCard collection={collection} chainId={chainId} />
         ))}
-      </main>
+      </Container>
     </div>
   )
 }
@@ -30,4 +31,15 @@ export const getServerSideProps: GetServerSideProps = async context => {
       chainId: Number(chainId)
     }
   }
+}
+
+const { Container } = {
+  Container: styled.main`
+    display: grid;
+    align-items: center;
+    justify-content: center;
+    grid-template-columns: repeat(auto-fit, 360px);
+    gap: 16px;
+    margin: 64px 32px;
+  `
 }
