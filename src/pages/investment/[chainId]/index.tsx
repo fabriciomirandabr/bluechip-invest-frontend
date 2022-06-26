@@ -38,8 +38,8 @@ const { Container } = {
     display: grid;
     align-items: center;
     justify-content: center;
-    grid-template-columns: repeat(auto-fit, 360px);
-    gap: 16px;
-    margin: 64px 32px;
+    grid-auto-columns: auto;
+    gap: 64px;
+    margin: 128px 32px;
   `
 }

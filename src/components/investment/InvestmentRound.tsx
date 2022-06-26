@@ -1,6 +1,5 @@
-import BigNumber from 'bignumber.js'
-import Image from 'next/image'
 import { useState } from 'react'
+import styled from 'styled-components'
 import {
   InvestmentRoundCollection as InvestmentRoundItem,
   InvestmentRoundItem as InvestmentRoundFull
@@ -8,6 +7,7 @@ import {
 import { useAccount } from '../../hooks/useAccount'
 import { investmentService } from '../../services/InvestmentService'
 import { units } from '../../utils'
+import InvestmentCard from './InvestmentCard'
 
 export interface InvestmentRoundProps {
   investment: InvestmentRoundFull
@@ -53,59 +53,8 @@ export default function InvestmentRound({ investment, investmentRound, chainId, 
   }
 
   return (
-    <div>
-      <div>
-        {investment && (
-          <>
-            <div>
-              <Image src={String(investment.image)} width={100} height={100} unoptimized />
-            </div>
-            <div>
-              <span>Target ID: </span>
-              {investment.target.tokenId}
-            </div>
-            <div>
-              <span>Target Price: </span>
-              {Number(investmentRound.floorPrice) * 1.1}
-            </div>
-            <div>
-              <span>Progress: </span>
-              {new BigNumber(investment.amount || 0).div(new BigNumber(investmentRound.floorPrice)).toFixed(2)}%
-            </div>
-            <div>
-              <span>Accumulated: </span>
-              {investment.amount} ETH
-            </div>
-            <div>
-              <hr />
-            </div>
-            <div>
-              <span>Collection: </span>
-              {investmentRound.name}
-            </div>
-            <div>
-              <span>Whale Rank: </span>
-              {investmentRound.whalesRankToday}
-            </div>
-            <div>
-              <span>Volume Today: </span>
-              {investmentRound.volumeToday} ETH
-            </div>
-            <div>
-              <span>Floor Price: </span>
-              {investmentRound.floorPrice} ETH
-            </div>
-            <div>
-              <span>Change Today: </span>
-              {investmentRound.floorSaleChangeToday}%
-            </div>
-            <div>
-              <span>Active Investors: </span>
-              {investment.buyersCount}
-            </div>
-          </>
-        )}
-      </div>
+    <Container>
+      <div>{investment && <InvestmentCard collection={investmentRound.contractAddress} chainId={chainId} detail />}</div>
       <div>
         {investment && (
           <>
@@ -167,6 +116,17 @@ export default function InvestmentRound({ investment, investmentRound, chainId, 
           </>
         )}
       </div>
-    </div>
+    </Container>
   )
+}
+
+const { Container } = {
+  Container: styled.div`
+    display: grid;
+    grid-template-columns: 300px 300px;
+    gap: 32px;
+    margin-bottom: 48px;
+    align-items: flex-start;
+    justify-content: center;
+  `
 }

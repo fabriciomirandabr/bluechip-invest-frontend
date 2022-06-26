@@ -10,9 +10,10 @@ import Button from '../shared/Button'
 interface InvestmentCardProps {
   collection: string
   chainId: number
+  detail?: boolean
 }
 
-export default function InvestmentCard({ collection, chainId }: InvestmentCardProps) {
+export default function InvestmentCard({ collection, chainId, detail: detail }: InvestmentCardProps) {
   const { data, loading, error } = useInvestment(collection, chainId)
   const { account } = useAccount()
 
@@ -33,6 +34,24 @@ export default function InvestmentCard({ collection, chainId }: InvestmentCardPr
           <div>
             <Image src={data.investment.image} width={300} height={300} unoptimized />
           </div>
+
+          {/* <div>
+              <span>Target ID: </span>
+              {investment.target.tokenId}
+            </div>
+            <div>
+              <span>Target Price: </span>
+              {Number(investmentRound.floorPrice) * 1.1}
+            </div>
+            <div>
+              <span>Progress: </span>
+              {new BigNumber(investment.amount || 0).div(new BigNumber(investmentRound.floorPrice)).toFixed(2)}%
+            </div>
+            <div>
+              <span>Accumulated: </span>
+              {investment.amount} ETH
+            </div> */}
+
           <div>{data.investment.name}</div>
           <div>
             <div>Whale Rank:</div>
@@ -40,7 +59,7 @@ export default function InvestmentCard({ collection, chainId }: InvestmentCardPr
           </div>
           <div>
             <div>Volume Today: </div>
-            <div>{data.investment.volumeToday} ETH</div>
+            <div>{Number(data.investment.volumeToday).toFixed(2)} ETH</div>
           </div>
           <div>
             <div>Floor Price: </div>
@@ -60,12 +79,12 @@ export default function InvestmentCard({ collection, chainId }: InvestmentCardPr
               {account && chainId !== account.chainId && <Button disabled>Change Network</Button>}
             </div>
           )}
-          {!account && (
+          {!account && !detail && (
             <div>
               <Button disabled>Connect Wallet</Button>
             </div>
           )}
-          {Number(data.investment.activeRound?.buyersCount) === 0 && (
+          {Number(data.investment.activeRound?.buyersCount) === 0 && !detail && (
             <div>
               {account && (
                 <Link href={`${chainId}/detail/${collection}`}>
@@ -85,7 +104,7 @@ export default function InvestmentCard({ collection, chainId }: InvestmentCardPr
 const { Container, Card } = {
   Container: styled.div`
     display: grid;
-    margin: 64px 32px;
+    max-width: 300px;
   `,
   Card: styled.div`
     padding: 24px;

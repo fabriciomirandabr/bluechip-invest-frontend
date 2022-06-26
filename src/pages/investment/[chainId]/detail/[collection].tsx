@@ -5,6 +5,7 @@ import Header from '../../../../components/layout/Header'
 import { useAccount } from '../../../../hooks/useAccount'
 import { useInvestment } from '../../../../hooks/useInvestment'
 import { investmentService } from '../../../../services/InvestmentService'
+import { colors } from '../../../../styles/theme'
 
 interface InvestmentDetailProps {
   chainId: number
@@ -31,28 +32,29 @@ export default function InvestmentDetail({ chainId, collection }: InvestmentDeta
       <main>
         <Container>
           {data && !data.investment.activeRound && (
-            <div>
+            <Action>
               <button onClick={startInvestment}>Start Round</button>
-            </div>
+            </Action>
           )}
           <div>
-            {loading && <div>loading</div>}
-            {error && <div>error</div>}
-            {!data && <div>empty</div>}
             <div>
-              <h1>ACTIVE INVESTMENT ROUND</h1>
-            </div>
+              <Title>
+                <h1>ACTIVE INVESTMENT ROUND</h1>
+              </Title>
 
-            {data && data.investment.activeRound && (
-              <InvestmentRound investmentRound={data.investment} investment={data.investment.activeRound} chainId={chainId} />
-            )}
-            <div>
-              <h1>LAST INVESTMENT ROUND</h1>
+              {data && data.investment.activeRound && (
+                <InvestmentRound investmentRound={data.investment} investment={data.investment.activeRound} chainId={chainId} />
+              )}
             </div>
-            {data &&
-              data.investment.lastRounds.map(round => (
-                <InvestmentRound investmentRound={data.investment} investment={round} chainId={chainId} lastRound />
-              ))}
+            <div>
+              <Title>
+                <h1>LAST INVESTMENT ROUND</h1>
+              </Title>
+              {data &&
+                data.investment.lastRounds.map(round => (
+                  <InvestmentRound investmentRound={data.investment} investment={round} chainId={chainId} lastRound />
+                ))}
+            </div>
           </div>
         </Container>
       </main>
@@ -72,6 +74,29 @@ export const getServerSideProps: GetServerSideProps = async context => {
   }
 }
 
-export const { Container } = {
-  Container: styled.div``
+export const { Container, Action, Title } = {
+  Container: styled.div`
+    display: grid;
+    align-items: center;
+    justify-content: center;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin: 64px 32px;
+  `,
+  Action: styled.div`
+    padding: 24px;
+    background: ${colors.white};
+    border-radius: 32px;
+    box-shadow: 3px 3px 3px 0px rgba(0, 0, 0, 0.15);
+  `,
+  Title: styled.div`
+    color: ${colors.white};
+    text-align: center;
+
+    h1 {
+      font-size: 24px;
+      line-height: 48px;
+      margin-bottom: 24px;
+    }
+  `
 }
