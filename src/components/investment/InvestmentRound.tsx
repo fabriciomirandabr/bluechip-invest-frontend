@@ -67,7 +67,7 @@ export default function InvestmentRound({ investment, investmentRound, chainId, 
                 <div>{shortAddress(buyerItem.buyer, 6, -6)}</div>
                 <div>{buyerItem.amount} ETH</div>
               </div>
-              {buyerItem.buyer.toLocaleLowerCase() === account?.address.toLocaleLowerCase() && (
+              {buyerItem.buyer.toLocaleLowerCase() === account?.address.toLocaleLowerCase() && !lastRound && (
                 <Button onClick={() => removeAllMoney()}>Remove Money</Button>
               )}
             </Buyers>
