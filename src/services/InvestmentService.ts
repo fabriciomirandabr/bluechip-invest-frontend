@@ -6,7 +6,7 @@ import { GQLClient } from '../graphql/GQLClient'
 import { FinishRoundData, FinishRoundVars, FINISH_ROUND_MUTATION } from '../graphql/query/FinishRound'
 import { units } from '../utils'
 import { Account } from '../variables/AccountVariable'
-import { setTransaction, TransactionType } from '../variables/TransactionVariable'
+import { loadingVar } from '../variables/TransactionVariable'
 
 export interface InvestmentService {
   createInvestment(collectionAddress: string, name: string, symbol: string): Promise<void>
@@ -99,10 +99,10 @@ export function investmentService(chainId: number, account: Account): Investment
         const txConfig = JSON.parse(data.serializedTransaction)
         txConfig.from = account.address
         txConfig.gasPrice = txConfig.gasPrice ? parseInt(txConfig.gasPrice).toString(10) : undefined
-
+        loadingVar(true)
         // Wallet Connect - Execute Transaction
         const tx = await account.web3.eth.sendTransaction(txConfig)
-        setTransaction(tx.blockHash, TransactionType.createInvestment)
+        loadingVar(false)
       } else {
         console.error('Reservoir Oracle not found NFT')
       }
@@ -155,8 +155,10 @@ export function investmentService(chainId: number, account: Account): Investment
       const txConfig = JSON.parse(data.serializedTransaction)
       txConfig.from = account.address
       txConfig.value = amount
+      loadingVar(true)
+      // Wallet Connect - Execute Transaction
       const tx = await account.web3.eth.sendTransaction(txConfig)
-      setTransaction(tx.blockHash, TransactionType.addMoney)
+      loadingVar(false)
     },
     async removeAllMoney(investmentId: string) {
       // Tatum - Prepare Transaction
@@ -199,8 +201,10 @@ export function investmentService(chainId: number, account: Account): Investment
 
       const txConfig = JSON.parse(data.serializedTransaction)
       txConfig.from = account.address
+      loadingVar(true)
+      // Wallet Connect - Execute Transaction
       const tx = await account.web3.eth.sendTransaction(txConfig)
-      setTransaction(tx.blockHash, TransactionType.removeAllMoney)
+      loadingVar(false)
     },
     async closeInvestment(investmentId: string, payload: string) {
       // Tatum - Prepare Transaction
@@ -247,14 +251,15 @@ export function investmentService(chainId: number, account: Account): Investment
 
       const txConfig = JSON.parse(data.serializedTransaction)
       txConfig.from = account.address
+      loadingVar(true)
+      // Wallet Connect - Execute Transaction
       const tx = await account.web3.eth.sendTransaction(txConfig)
+      loadingVar(false)
 
       await GQLClient.mutate<FinishRoundData, FinishRoundVars>({
         variables: { chainId, listingId: investmentId },
         mutation: FINISH_ROUND_MUTATION
       })
-
-      setTransaction(tx.blockHash, TransactionType.closeInvestment)
     },
     async claimFractions(investmentId: string) {
       // Tatum - Prepare Transaction
@@ -300,8 +305,10 @@ export function investmentService(chainId: number, account: Account): Investment
 
       const txConfig = JSON.parse(data.serializedTransaction)
       txConfig.from = account.address
+      loadingVar(true)
+      // Wallet Connect - Execute Transaction
       const tx = await account.web3.eth.sendTransaction(txConfig)
-      setTransaction(tx.blockHash, TransactionType.claim)
+      loadingVar(false)
     }
   }
 }

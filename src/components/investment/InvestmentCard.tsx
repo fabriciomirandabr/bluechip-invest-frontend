@@ -94,7 +94,7 @@ export default function InvestmentCard({ collection, chainId, detail, investment
               <Button disabled>Connect Wallet</Button>
             </div>
           )}
-          {Number(data.investment.activeRound?.buyersCount) === 0 && !detail && (
+          {!detail && (
             <div>
               {account && (
                 <Link href={`${chainId}/detail/${collection}`}>

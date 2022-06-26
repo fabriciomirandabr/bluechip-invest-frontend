@@ -6,10 +6,11 @@ import { useAccount } from '../../hooks/useAccount'
 
 import { transactionService } from '../../services/TransactionService'
 import { colors } from '../../styles/theme'
-import { transactionVar } from '../../variables/TransactionVariable'
+import { loadingVar, transactionVar } from '../../variables/TransactionVariable'
 
 export function WalletModal() {
   const transaction = useReactiveVar(transactionVar)
+  const loading = useReactiveVar(loadingVar)
   const { account } = useAccount()
 
   useEffect(() => {
@@ -30,7 +31,7 @@ export function WalletModal() {
 
   return (
     <>
-      {transaction && !transaction.confirmed && (
+      {loading && (
         <Container>
           <p>Processing Transaction</p>
         </Container>

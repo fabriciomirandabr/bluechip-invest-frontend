@@ -17,6 +17,8 @@ export type Transaction = {
 
 export const transactionVar = makeVar<Transaction | undefined>(undefined)
 
+export const loadingVar = makeVar<boolean>(false)
+
 export const setTransaction = (hash: string, type: TransactionType) => {
   const transaction: Transaction = { hash, type, confirmed: false, loading: true }
   transactionVar(transaction)
