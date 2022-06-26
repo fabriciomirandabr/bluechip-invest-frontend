@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import logo from '../../../public/assets/bluechip_invest.png'
 import { colors } from '../../styles/theme'
 import WalletButton from '../wallet/WalletButton'
+import { WalletModal } from '../wallet/WalletModal'
 
 interface HeaderProps {
   chainId: number
@@ -11,18 +12,21 @@ interface HeaderProps {
 
 export default function Header({ chainId }: HeaderProps) {
   return (
-    <Container>
-      <div>
-        <Link href={`/investment/${chainId}`}>
-          <a>
-            <Image src={logo} width={207} height={48} />
-          </a>
-        </Link>
-      </div>
-      <div>
-        <WalletButton />
-      </div>
-    </Container>
+    <>
+      <Container>
+        <div>
+          <Link href={`/investment/${chainId}`}>
+            <a>
+              <Image src={logo} width={207} height={48} />
+            </a>
+          </Link>
+        </div>
+        <div>
+          <WalletButton />
+        </div>
+      </Container>
+      <WalletModal />
+    </>
   )
 }
 

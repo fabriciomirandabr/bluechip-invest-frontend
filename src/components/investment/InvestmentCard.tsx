@@ -28,9 +28,6 @@ export default function InvestmentCard({ collection, chainId }: InvestmentCardPr
 
   return (
     <Container>
-      {loading && <div>loading</div>}
-      {error && <div>error</div>}
-      {!data && <div>empty</div>}
       {data && data.investment && (
         <Card>
           <div>
