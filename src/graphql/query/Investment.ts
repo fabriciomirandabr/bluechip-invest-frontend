@@ -7,7 +7,7 @@ export interface InvestmentVars {
 
 export interface InvestmentData {
   investment: {
-    activeRound: {
+    activeRound?: {
       id: string
       target: {
         collection: {
@@ -18,6 +18,7 @@ export interface InvestmentData {
       }
       acquiringData: string
       reservePrice: string
+      buyersCount: string
     }
     contractAddress: string
     description: string
@@ -55,6 +56,7 @@ export const INVESTMENT_QUERY = gql`
         }
         acquiringData
         reservePrice
+        buyersCount
       }
       contractAddress
       description
@@ -72,6 +74,8 @@ export const INVESTMENT_QUERY = gql`
         }
       }
       name
+      volumeToday
+      whalesRankToday
     }
   }
 `

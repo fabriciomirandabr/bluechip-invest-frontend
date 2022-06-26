@@ -5,7 +5,7 @@ export const useInvestment = (collectionAddress: string, chainId: number) => {
   const { loading, data, error, refetch } = useQuery<InvestmentData, InvestmentVars>(INVESTMENT_QUERY, {
     variables: {
       collectionAddress,
-      chainId
+      chainId: chainId
     }
   })
 

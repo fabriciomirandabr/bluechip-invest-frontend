@@ -16,9 +16,13 @@ export interface InvestmentService {
 export function investmentService(chainId: number, account: Account): InvestmentService {
   return {
     async createInvestment(collectionAddress: string, name: string, symbol: string) {
+      console.log('collectionAddress', collectionAddress)
+      console.log('name', name)
+      console.log('symbol', symbol)
+
       // Reservoir Oracle API - Get Floor Price
       const oracle = await axios.get<{ tokens: { tokenId: string }[] }>(
-        `${configByChain(chainId).reservoir.api}/tokens/bootstrap/v1?collection=${collectionAddress}&limit=50`
+        `${configByChain(chainId).reservoir.api}/tokens/bootstrap/v1?collection=${collectionAddress}&limit=100`
       )
       const tokenId = oracle.data.tokens[0].tokenId
 
@@ -31,7 +35,7 @@ export function investmentService(chainId: number, account: Account): Investment
 
       const nftIsValid = nft.data.orders.filter(order => !order.finalized).length > 0
 
-      if (nftIsValid && account) {
+      if (nftIsValid && account.address) {
         const web3 = account.web3
 
         const typeBytes = web3.utils.asciiToHex('AUCTION')
@@ -46,6 +50,8 @@ export function investmentService(chainId: number, account: Account): Investment
           ['bytes32', 'string', 'string', 'uint256', 'uint256'],
           [typeBytes, `${name} ${tokenId} Investment`, `${symbol}I`, duration, communityFeeUnits]
         )
+
+        console.log('contract', configByChain(chainId).contracts.investment)
 
         // Tatum - Prepare Transaction
         const prepareTx = await axios.post<{ signatureId: string }>(
@@ -207,7 +213,7 @@ export function investmentService(chainId: number, account: Account): Investment
       const prepareTx = await axios.post<{ signatureId: string }>(
         `${configByChain(chainId).tatum.api}/ethereum/smartcontract`,
         {
-          contractAddress: configByChain(chainId).contracts.closeInvestment,
+          contractAddress: configByChain(chainId).contracts.investmentAcquire,
           methodName: 'acquire',
           methodABI: {
             inputs: [

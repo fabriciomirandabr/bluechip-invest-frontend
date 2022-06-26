@@ -64,7 +64,7 @@ export interface ChainConfig {
   }
   contracts: {
     investment: string
-    closeInvestment: string
+    investmentAcquire: string
   }
 }
 
@@ -89,7 +89,7 @@ export const chainConfig: ChainConfig[] = [
     },
     contracts: {
       investment: process.env.NEXT_PUBLIC_INVESTMENT_CONTRACT,
-      closeInvestment: process.env.NEXT_PUBLIC_CLOSE_INVESTMENT_CONTRACT
+      investmentAcquire: process.env.NEXT_PUBLIC_CLOSE_INVESTMENT_CONTRACT
     }
   },
   {
@@ -112,7 +112,7 @@ export const chainConfig: ChainConfig[] = [
     },
     contracts: {
       investment: process.env.NEXT_PUBLIC_INVESTMENT_CONTRACT,
-      closeInvestment: process.env.NEXT_PUBLIC_CLOSE_INVESTMENT_CONTRACT
+      investmentAcquire: process.env.NEXT_PUBLIC_CLOSE_INVESTMENT_CONTRACT
     }
   }
 ]

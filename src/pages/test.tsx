@@ -1,7 +1,7 @@
 import WalletButton from '../components/wallet/WalletButton'
 import { WalletModal } from '../components/wallet/WalletModal'
 import { useAccount } from '../hooks/useAccount'
-import { useInvestment } from '../hooks/useInvestiment'
+import { useInvestment } from '../hooks/useInvestment'
 import { investmentService } from '../services/InvestmentService'
 
 export default function Home() {
