@@ -1,7 +1,11 @@
 import { makeVar } from '@apollo/client'
 
 export enum TransactionType {
-  test = 'test'
+  createInvestment = 'createInvestment',
+  addMoney = 'addMoney',
+  removeAllMoney = 'removeAllMoney',
+  closeInvestment = 'closeInvestment',
+  claim = 'claim'
 }
 
 export type Transaction = {

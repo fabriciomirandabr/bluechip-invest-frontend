@@ -69,7 +69,9 @@ export default function InvestmentCard({ collection, chainId }: InvestmentCardPr
             <div>
               {account && (
                 <Link href={`${chainId}/detail/${collection}`}>
-                  <a>Enter Investment</a>
+                  <a>
+                    <Button>Enter Investment</Button>
+                  </a>
                 </Link>
               )}
             </div>
@@ -90,6 +92,13 @@ const { Container, Card } = {
     background: ${colors.white};
     border-radius: 32px;
     box-shadow: 3px 3px 3px 0px rgba(0, 0, 0, 0.15);
+
+    a {
+      width: 100%;
+      button {
+        width: 100%;
+      }
+    }
 
     img {
       border-radius: 16px;

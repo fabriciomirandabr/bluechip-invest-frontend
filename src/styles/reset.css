@@ -127,6 +127,11 @@ table {
   border-spacing: 0;
 }
 
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
 * {
   font-family: 'Quicksand', sans-serif;
 }

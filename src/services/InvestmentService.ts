@@ -6,6 +6,7 @@ import { GQLClient } from '../graphql/GQLClient'
 import { FinishRoundData, FinishRoundVars, FINISH_ROUND_MUTATION } from '../graphql/query/FinishRound'
 import { units } from '../utils'
 import { Account } from '../variables/AccountVariable'
+import { setTransaction, TransactionType } from '../variables/TransactionVariable'
 
 export interface InvestmentService {
   createInvestment(collectionAddress: string, name: string, symbol: string): Promise<void>
@@ -18,10 +19,6 @@ export interface InvestmentService {
 export function investmentService(chainId: number, account: Account): InvestmentService {
   return {
     async createInvestment(collectionAddress: string, name: string, symbol: string) {
-      console.log('collectionAddress', collectionAddress)
-      console.log('name', name)
-      console.log('symbol', symbol)
-
       // Reservoir Oracle API - Get Floor Price
       const oracle = await axios.get<{ tokens: { tokenId: string }[] }>(
         `${configByChain(chainId).reservoir.api}/tokens/bootstrap/v1?collection=${collectionAddress}&limit=100`
@@ -52,8 +49,6 @@ export function investmentService(chainId: number, account: Account): Investment
           ['bytes32', 'string', 'string', 'uint256', 'uint256'],
           [typeBytes, `${name} ${tokenId} Investment`, `${symbol}I`, duration, communityFeeUnits]
         )
-
-        console.log('contract', configByChain(chainId).contracts.investment)
 
         // Tatum - Prepare Transaction
         const prepareTx = await axios.post<{ signatureId: string }>(
@@ -107,8 +102,7 @@ export function investmentService(chainId: number, account: Account): Investment
 
         // Wallet Connect - Execute Transaction
         const tx = await account.web3.eth.sendTransaction(txConfig)
-
-        console.log(tx)
+        setTransaction(tx.blockHash, TransactionType.createInvestment)
       } else {
         console.error('Reservoir Oracle not found NFT')
       }
@@ -116,10 +110,6 @@ export function investmentService(chainId: number, account: Account): Investment
       // IPFS - Save Investment
     },
     async addMoney(investmentId: string, amount: string, reservePrice: string) {
-      console.log('investmentId', investmentId)
-      console.log('amount', amount)
-      console.log('reservePrice', reservePrice)
-
       // Tatum - Prepare Transaction
       const prepareTx = await axios.post<{ signatureId: string }>(
         `${configByChain(chainId).tatum.api}/ethereum/smartcontract`,
@@ -166,8 +156,7 @@ export function investmentService(chainId: number, account: Account): Investment
       txConfig.from = account.address
       txConfig.value = amount
       const tx = await account.web3.eth.sendTransaction(txConfig)
-
-      console.log('tx', tx)
+      setTransaction(tx.blockHash, TransactionType.addMoney)
     },
     async removeAllMoney(investmentId: string) {
       // Tatum - Prepare Transaction
@@ -211,8 +200,7 @@ export function investmentService(chainId: number, account: Account): Investment
       const txConfig = JSON.parse(data.serializedTransaction)
       txConfig.from = account.address
       const tx = await account.web3.eth.sendTransaction(txConfig)
-
-      console.log('tx', tx)
+      setTransaction(tx.blockHash, TransactionType.removeAllMoney)
     },
     async closeInvestment(investmentId: string, payload: string) {
       // Tatum - Prepare Transaction
@@ -266,7 +254,7 @@ export function investmentService(chainId: number, account: Account): Investment
         mutation: FINISH_ROUND_MUTATION
       })
 
-      console.log('tx', tx)
+      setTransaction(tx.blockHash, TransactionType.closeInvestment)
     },
     async claimFractions(investmentId: string) {
       // Tatum - Prepare Transaction
@@ -313,8 +301,7 @@ export function investmentService(chainId: number, account: Account): Investment
       const txConfig = JSON.parse(data.serializedTransaction)
       txConfig.from = account.address
       const tx = await account.web3.eth.sendTransaction(txConfig)
-
-      console.log('tx', tx)
+      setTransaction(tx.blockHash, TransactionType.claim)
     }
   }
 }
